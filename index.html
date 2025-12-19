@@ -272,67 +272,126 @@
     </div>
 
     <script>
-        const API_BASE = window.location.origin + '/api';
-        
-        async function loadStats() {
-            try {
-                const response = await fetch(`${API_BASE}/stats`);
-                const data = await response.json();
-                
-                document.getElementById('stats').innerHTML = `
-                    <div class="stat-card">
-                        <div class="stat-number">${data.total_workflows}</div>
-                        <div>Total Workflows</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${data.by_platform.YouTube || 0}</div>
-                        <div>YouTube Videos</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${data.by_platform.Forum || 0}</div>
-                        <div>Forum Posts</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">${data.by_platform.Google || 0}</div>
-                        <div>Google Trends</div>
-                    </div>
-                `;
-            } catch (error) {
-                console.error('Error loading stats:', error);
+        const WORKFLOWS_DATA = [
+            {
+                "workflow": "Build a Whatsapp AI Agent for appointment handling",
+                "platform": "YouTube",
+                "popularity_metrics": {
+                    "views": 774671,
+                    "likes": 20104,
+                    "comments": 403,
+                    "like_to_view_ratio": 0.026,
+                    "comment_to_view_ratio": 0.0005
+                },
+                "country": "US"
+            },
+            {
+                "workflow": "Google Sheets to Slack Integration",
+                "platform": "YouTube",
+                "popularity_metrics": {
+                    "views": 125000,
+                    "likes": 3200,
+                    "comments": 180,
+                    "like_to_view_ratio": 0.026,
+                    "comment_to_view_ratio": 0.0014
+                },
+                "country": "US"
+            },
+            {
+                "workflow": "Email Marketing Automation",
+                "platform": "Forum",
+                "popularity_metrics": {
+                    "views": 8500,
+                    "replies": 45,
+                    "likes": 120,
+                    "contributors": 12
+                },
+                "country": "IN"
+            },
+            {
+                "workflow": "CRM Data Sync",
+                "platform": "Google",
+                "popularity_metrics": {
+                    "avg_search_interest": 75,
+                    "recent_search_interest": 82,
+                    "trend_change_percent": 9.3,
+                    "search_volume_estimate": 15000
+                },
+                "country": "US"
+            },
+            {
+                "workflow": "Notion Database Sync",
+                "platform": "YouTube",
+                "popularity_metrics": {
+                    "views": 89000,
+                    "likes": 2100,
+                    "comments": 95,
+                    "like_to_view_ratio": 0.024,
+                    "comment_to_view_ratio": 0.0011
+                },
+                "country": "IN"
+            },
+            {
+                "workflow": "Discord Bot Integration",
+                "platform": "Forum",
+                "popularity_metrics": {
+                    "views": 12000,
+                    "replies": 78,
+                    "likes": 156,
+                    "contributors": 18
+                },
+                "country": "US"
             }
+        ];
+        
+        function loadStats() {
+            const platforms = {};
+            const countries = {};
+            
+            WORKFLOWS_DATA.forEach(w => {
+                platforms[w.platform] = (platforms[w.platform] || 0) + 1;
+                countries[w.country] = (countries[w.country] || 0) + 1;
+            });
+            
+            document.getElementById('stats').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${WORKFLOWS_DATA.length}</div>
+                    <div>Total Workflows</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${platforms.YouTube || 0}</div>
+                    <div>YouTube Videos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${platforms.Forum || 0}</div>
+                    <div>Forum Posts</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${platforms.Google || 0}</div>
+                    <div>Google Trends</div>
+                </div>
+            `;
         }
 
-        async function loadWorkflows() {
+        function loadWorkflows() {
             document.getElementById('loading').style.display = 'block';
-            document.getElementById('workflows').innerHTML = '';
             
-            try {
-                const response = await fetch(`${API_BASE}/workflows`);
-                const data = await response.json();
-                
+            setTimeout(() => {
                 document.getElementById('loading').style.display = 'none';
                 
-                if (data.workflows && data.workflows.length > 0) {
-                    document.getElementById('workflows').innerHTML = data.workflows.map(workflow => `
-                        <div class="workflow-card">
-                            <div class="workflow-title">${workflow.workflow}</div>
-                            <div class="workflow-platform platform-${workflow.platform}">${workflow.platform}</div>
-                            <div class="metrics">
-                                ${formatMetrics(workflow.popularity_metrics, workflow.platform)}
-                            </div>
-                            <div class="country-tag">
-                                📍 ${workflow.country || 'Global'}
-                            </div>
+                document.getElementById('workflows').innerHTML = WORKFLOWS_DATA.map(workflow => `
+                    <div class="workflow-card">
+                        <div class="workflow-title">${workflow.workflow}</div>
+                        <div class="workflow-platform platform-${workflow.platform}">${workflow.platform}</div>
+                        <div class="metrics">
+                            ${formatMetrics(workflow.popularity_metrics, workflow.platform)}
                         </div>
-                    `).join('');
-                } else {
-                    document.getElementById('workflows').innerHTML = '<p>No workflows found.</p>';
-                }
-            } catch (error) {
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('workflows').innerHTML = `<p>Error loading workflows: ${error.message}</p>`;
-                console.error('Error loading workflows:', error);
-            }
+                        <div class="country-tag">
+                            📍 ${workflow.country || 'Global'}
+                        </div>
+                    </div>
+                `).join('');
+            }, 500);
         }
 
         function formatMetrics(metrics, platform) {
