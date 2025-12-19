@@ -89,3 +89,7 @@ def get_stats():
         "by_platform": platforms,
         "by_country": countries
     }
+
+# Vercel handler
+def handler(request):
+    return app(request)
