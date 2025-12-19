@@ -1,0 +1,8 @@
+{
+  "name": "n8n-workflow-tracker",
+  "version": "1.0.0",
+  "description": "n8n Workflow Popularity Tracker",
+  "scripts": {
+    "build": "echo 'Build complete'"
+  }
+}

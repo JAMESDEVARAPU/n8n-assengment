@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  n8n-tracker:
+    build: .
+    ports:
+      - "8002:8002"
+    environment:
+      - YOUTUBE_API_KEY=${YOUTUBE_API_KEY}
+      - DISCOURSE_API_KEY=${DISCOURSE_API_KEY}
+      - DISCOURSE_API_USERNAME=${DISCOURSE_API_USERNAME}
+    volumes:
+      - ./workflows_data.json:/app/workflows_data.json
+    restart: unless-stopped
