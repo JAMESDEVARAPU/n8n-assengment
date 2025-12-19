@@ -42,7 +42,7 @@ def root():
 
 @app.get("/workflows")
 def get_workflows():
-    return DATA
+    return {"workflows": DATA.get('workflows', [])}
 
 @app.get("/stats")
 def get_stats():
